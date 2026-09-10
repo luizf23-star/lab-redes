@@ -1,8 +1,8 @@
 
 === ENTREGA 1 — dois segmentos e um serviço ===
 
-  arquivo lido:        /home/runner/work/redes-lab-grupo/redes-lab-grupo/e1-segmentos/docker-compose.yml
-  serviços declarados: host-b2 srv-a host-a1 host-a2 host-b1 
+  arquivo lido:        /home/runner/work/lab-redes/lab-redes/e1-segmentos/docker-compose.yml
+  serviços declarados: host-b1 host-b2 srv-a host-a1 host-a2 
 
   [32m OK [0m contêiner e1-host-a1 no ar
         observado: 10.0.10.10/24
@@ -16,9 +16,9 @@
         observado: 10.0.20.11/24
 
   [32m OK [0m A: host-a1 alcança host-a2
-        observado: 64 bytes from 10.0.10.11: icmp_seq=1 ttl=64 time=0.118 ms
+        observado: 64 bytes from 10.0.10.11: icmp_seq=1 ttl=64 time=0.046 ms
   [32m OK [0m B: host-b1 alcança host-b2
-        observado: 64 bytes from 10.0.20.11: icmp_seq=1 ttl=64 time=0.061 ms
+        observado: 64 bytes from 10.0.20.11: icmp_seq=1 ttl=64 time=0.048 ms
   [32m OK [0m A: host-a2 obtém a página do servidor
         observado: servidor srv-a, segmento A, 10.0.10.20
 
