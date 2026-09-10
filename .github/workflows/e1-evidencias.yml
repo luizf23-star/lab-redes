@@ -1,0 +1,40 @@
+name: Gerar evidencias E1
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verificar-e1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Verificar Docker
+        run: |
+          docker --version
+          docker compose version
+
+      - name: Subir Entrega 1
+        run: make up E=1
+
+      - name: Verificar Entrega 1
+        run: make verificar E=1
+
+      - name: Gerar evidencias
+        run: make evidencias E=1
+
+      - name: Commitar evidencias
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add e1-segmentos/evidencias/verificacao.txt
+          git diff --cached --quiet || git commit -m "Adiciona evidencias da Entrega 1"
+          git push
