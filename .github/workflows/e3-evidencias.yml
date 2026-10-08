@@ -1,0 +1,62 @@
+name: Gerar evidencias E3
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'e3-replicas/cliente.sh'
+      - 'e3-replicas/docker-compose.yml'
+      - 'e3-replicas/verificar.sh'
+      - 'e3-replicas/testar-contrato.py'
+      - 'base/**'
+      - 'Makefile'
+      - '.github/workflows/e3-evidencias.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: evidencias-e3
+  cancel-in-progress: false
+
+jobs:
+  verificar-e3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Subir Entrega 3
+        run: make up E=3
+
+      - name: Verificar e gerar evidencias oficiais
+        run: make evidencias E=3
+
+      - name: Conferir codigos de saida e limite de tempo
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 e3-replicas/testar-contrato.py | tee e3-replicas/evidencias/contrato.txt
+
+      - name: Guardar evidencias para download
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-entrega-3
+          path: e3-replicas/evidencias/
+
+      - name: Commitar evidencias verificadas
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add e3-replicas/evidencias/verificacao.txt e3-replicas/evidencias/contrato.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "Adiciona evidencias verificadas da Entrega 3"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Encerrar laboratorio
+        if: always()
+        run: make down E=3

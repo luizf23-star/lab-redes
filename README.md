@@ -60,3 +60,68 @@ Depois que todas as provas estiverem verdes, as evidências são geradas com:
 ```bash
 make evidencias E=1
 ```
+
+## Entrega 3 — O serviço não pode cair
+
+O diretório `e3-replicas/` usa a topologia e o verificador oficiais do
+laboratório do professor. Um cliente no segmento A (`10.0.10.10`) acessa três
+réplicas HTTP no segmento B através do roteador, com endereços
+`10.0.10.254` e `10.0.20.254`.
+
+| Réplica | Endereço | Resposta HTTP |
+|---|---|---|
+| replica1 | `10.0.20.21:8080` | `replica1` |
+| replica2 | `10.0.20.22:8080` | `replica2` |
+| replica3 | `10.0.20.23:8080` | `replica3` |
+
+### Como o cliente mantém o serviço disponível
+
+O `cliente.sh` tenta cada réplica em sequência. Cada tentativa tem limite
+total de 1 segundo, incluindo a conexão e o recebimento da resposta. Se uma
+tentativa falhar, o cliente passa à próxima, sem repetir indefinidamente.
+As três tentativas têm um orçamento de rede de até 3 segundos, deixando
+margem para terminar antes dos 5 segundos do contrato.
+
+O cliente só imprime o nome que recebeu quando o `curl` termina com sucesso
+e o corpo corresponde à réplica consultada. Erros HTTP, respostas vazias,
+nomes incorretos e transferências incompletas não contam como sucesso.
+Quando encontra uma resposta válida, termina com código 0. Quando nenhuma
+réplica responde, imprime apenas `INDISPONIVEL` e termina com código 1.
+Uma nova execução tenta as três novamente, permitindo recuperação sem
+alterar o cliente.
+
+### Réplica morta × partição de rede
+
+O cliente não consegue distinguir com certeza uma réplica morta de uma
+réplica particionada apenas pela ausência de resposta. Em `docker stop`, o
+processo da réplica é encerrado. Em `docker network disconnect`, o processo
+continua em execução, mas perdeu a comunicação com o cliente. Nos dois
+casos, a requisição pode falhar ou atingir o limite de tempo.
+
+Para este serviço de consulta, essa incerteza não impede o funcionamento:
+o cliente precisa saber qual réplica respondeu, tenta as demais e avisa
+quando nenhuma está alcançável. `INDISPONIVEL` significa indisponível para
+este cliente, e não que todas as réplicas necessariamente morreram. Em um
+serviço com escritas, a distinção exigiria mais cuidado, pois uma operação
+poderia ter sido executada mesmo sem a resposta chegar; repeti-la poderia
+duplicar seus efeitos.
+
+### Testes e evidências
+
+```bash
+make up E=3
+make verificar E=3
+make evidencias E=3
+python3 e3-replicas/testar-contrato.py
+```
+
+O verificador oficial cobre tudo no ar, uma réplica parada, duas paradas,
+partição da última réplica e restauração. O teste complementar mede também
+o código de saída e o tempo com precisão, cada réplica funcionando sozinha,
+todas paradas e partição de uma réplica com outras disponíveis.
+
+O GitHub Actions executa os testes com Docker e grava a saída oficial em
+`e3-replicas/evidencias/verificacao.txt`, além das medições complementares
+em `e3-replicas/evidencias/contrato.txt`. As evidências da Entrega 1 são
+preservadas. Para reproduzir no Cloud Shell, use os comandos acima na
+pasta deste repositório.

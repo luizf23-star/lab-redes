@@ -3,6 +3,8 @@ name: Gerar evidencias E1
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**/evidencias/**'
   workflow_dispatch:
 
 permissions:

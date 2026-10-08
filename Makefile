@@ -32,6 +32,12 @@ prep:
 
 up: prep base
 	@test -n "$(DIR)" || (echo "Entrega E=$(E) não existe"; exit 1)
+	@# As entregas usam as mesmas sub-redes; remova as outras topologias.
+	@for d in e1-* e2-* e3-* e4-* e5-*; do \
+	  if [ -d "$$d" ] && [ "$$d" != "$(DIR)" ]; then \
+	    (cd "$$d" && $(COMPOSE) down -v --remove-orphans >/dev/null 2>&1) || true; \
+	  fi; \
+	done
 	cd $(DIR) && $(COMPOSE) up -d
 	@echo "Topologia da entrega $(E) no ar, a partir de $(CURDIR)/$(DIR)"
 	@echo "Rode: make verificar E=$(E)"
@@ -43,7 +49,9 @@ verificar:
 	@cd $(DIR) && sh verificar.sh
 
 evidencias:
-	@cd $(DIR) && mkdir -p evidencias && sh verificar.sh 2>&1 | tee evidencias/verificacao.txt
+	@cd $(DIR) && mkdir -p evidencias && \
+	  sh verificar.sh > evidencias/verificacao.txt 2>&1; \
+	  resultado=$$?; cat evidencias/verificacao.txt; exit $$resultado
 	@echo "Gravado em $(DIR)/evidencias/ — commite e anexe na entrega."
 
 limpar:
