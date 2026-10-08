@@ -16,9 +16,9 @@
         observado: 10.0.20.11/24
 
   [32m OK [0m A: host-a1 alcança host-a2
-        observado: 64 bytes from 10.0.10.11: icmp_seq=1 ttl=64 time=0.046 ms
+        observado: 64 bytes from 10.0.10.11: icmp_seq=1 ttl=64 time=0.058 ms
   [32m OK [0m B: host-b1 alcança host-b2
-        observado: 64 bytes from 10.0.20.11: icmp_seq=1 ttl=64 time=0.048 ms
+        observado: 64 bytes from 10.0.20.11: icmp_seq=1 ttl=64 time=0.051 ms
   [32m OK [0m A: host-a2 obtém a página do servidor
         observado: servidor srv-a, segmento A, 10.0.10.20
 
