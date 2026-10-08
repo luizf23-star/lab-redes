@@ -1,0 +1,12 @@
+=== ENTREGA 3 — contrato complementar (Docker real) ===
+OK três réplicas: replica1, código=0, tempo=0.047s
+OK réplica1 parada: replica2, código=0, tempo=1.052s
+OK somente réplica3: replica3, código=0, tempo=2.057s
+OK última réplica viva e particionada: INDISPONIVEL, código=1, tempo=3.057s
+OK restaurado: replica1, código=0, tempo=0.047s
+OK somente réplica1: replica1, código=0, tempo=0.045s
+OK somente réplica2: replica2, código=0, tempo=1.052s
+OK todas as réplicas paradas: INDISPONIVEL, código=1, tempo=3.057s
+OK réplica1 particionada com alternativas: replica2, código=0, tempo=1.049s
+OK restauração final: replica1, código=0, tempo=0.047s
+CONTRATO COMPLETO
