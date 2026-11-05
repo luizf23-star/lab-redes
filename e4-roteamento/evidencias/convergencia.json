@@ -1,0 +1,23 @@
+{
+  "data_utc": "2026-11-05T22:49:31.806909+00:00",
+  "antes": {
+    "r1_para_b": "10.0.20.10 via 10.0.30.12 dev eth1 src 10.0.30.11 uid 0 \n    cache",
+    "r2_para_a": "10.0.10.10 via 10.0.30.11 dev eth0 src 10.0.30.12 uid 0 \n    cache"
+  },
+  "recuperacao_s": 25.765,
+  "apos_desconexao_s": 25.683,
+  "desconectar_s": 0.082,
+  "durante_falha": {
+    "r1_para_b": "10.0.20.10 via 10.0.40.13 dev eth2 src 10.0.40.11 uid 0 \n    cache",
+    "r2_para_a": "10.0.10.10 via 10.0.50.13 dev eth1 src 10.0.50.12 uid 0 \n    cache"
+  },
+  "restauracao_s": 0.283,
+  "restaurado": {
+    "r1_para_b": "10.0.20.10 via 10.0.30.12 dev eth1 src 10.0.30.11 uid 0 \n    cache",
+    "r2_para_a": "10.0.10.10 via 10.0.30.11 dev eth0 src 10.0.30.12 uid 0 \n    cache"
+  },
+  "oficial_recuperacao_s": 29,
+  "commit_testado": "dcadf511040cf97c08d49cc25800f4710af4aa22",
+  "execucao": "https://github.com/luizf23-star/lab-redes/actions/runs/42124323897",
+  "verificador_sha256": "b0c737a8d0d481a03623f7474aab4b38fe0f4a06bef9a358acde9d860355d507"
+}

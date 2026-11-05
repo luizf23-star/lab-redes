@@ -191,9 +191,21 @@ durante a prova dinâmica.
 ### Tempo de convergência medido
 
 <!-- E4-RESULTADOS-INICIO -->
-O fluxo `Gerar evidencias E4` preenche este bloco com as medidas reais somente
-depois que a verificação oficial e o teste complementar terminam com sucesso.
-Os resultados completos ficam em `e4-roteamento/evidencias/`.
+Medição em Docker real, em 2026-11-05T22:49:31.806909+00:00:
+
+| Verificação | Resultado medido |
+|---|---|
+| Roteiro oficial: recuperação após queda das duas pontas de t1 | 29 s |
+| Teste complementar: desvio confirmado e ping nos dois sentidos | 25.765 s |
+| Teste complementar: volta ao caminho curto nos dois sentidos | 0.283 s |
+
+Os resultados são de execuções distintas: o roteiro oficial mede em segundos
+inteiros; o complementar usa relógio monotônico, consulta aproximadamente a cada
+segundo e inclui as operações Docker. Os valores não são uma garantia de tempo
+para outra máquina ou para outra fase dos temporizadores do RIP.
+
+Commit testado: `dcadf511040cf97c08d49cc25800f4710af4aa22`.
+[Execução e logs](https://github.com/luizf23-star/lab-redes/actions/runs/42124323897).
 <!-- E4-RESULTADOS-FIM -->
 
 ### E numa rede com 50 roteadores?

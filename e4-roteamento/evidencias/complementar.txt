@@ -1,0 +1,45 @@
+=== E4 — convergência complementar (Docker real) ===
+OK caminho curto nos dois sentidos: 0.217s; ping A->B e B->A
+   r1_para_b: 10.0.20.10 via 10.0.30.12 dev eth1 src 10.0.30.11 uid 0 
+    cache
+   r2_para_a: 10.0.10.10 via 10.0.30.11 dev eth0 src 10.0.30.12 uid 0 
+    cache
+Trânsito 1 desconectado nas DUAS pontas.
+OK desvio por r3 nos dois sentidos: 25.683s; ping A->B e B->A
+   r1_para_b: 10.0.20.10 via 10.0.40.13 dev eth2 src 10.0.40.11 uid 0 
+    cache
+   r2_para_a: 10.0.10.10 via 10.0.50.13 dev eth1 src 10.0.50.12 uid 0 
+    cache
+OK retorno automático ao caminho curto: 0.221s; ping A->B e B->A
+   r1_para_b: 10.0.20.10 via 10.0.30.12 dev eth1 src 10.0.30.11 uid 0 
+    cache
+   r2_para_a: 10.0.10.10 via 10.0.30.11 dev eth0 src 10.0.30.12 uid 0 
+    cache
+--- e4-r1 ---
+BIRD 2.15.1 ready.
+BIRD 2.15.1
+Router ID is 10.0.10.254
+Hostname is c84a952e1a2c
+Current server time is 2026-11-05 22:49:58.018
+Last reboot on 2026-11-05 22:48:54.086
+Last reconfiguration on 2026-11-05 22:48:54.086
+Daemon is up and running
+--- e4-r2 ---
+BIRD 2.15.1 ready.
+BIRD 2.15.1
+Router ID is 10.0.20.254
+Hostname is 6a617854c48d
+Current server time is 2026-11-05 22:49:58.072
+Last reboot on 2026-11-05 22:48:54.096
+Last reconfiguration on 2026-11-05 22:48:54.096
+Daemon is up and running
+--- e4-r3 ---
+BIRD 2.15.1 ready.
+BIRD 2.15.1
+Router ID is 10.0.40.13
+Hostname is 64070877411c
+Current server time is 2026-11-05 22:49:58.126
+Last reboot on 2026-11-05 22:48:54.027
+Last reconfiguration on 2026-11-05 22:48:54.027
+Daemon is up and running
+CONVERGÊNCIA COMPLEMENTAR COMPLETA

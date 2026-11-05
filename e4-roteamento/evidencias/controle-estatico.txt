@@ -1,0 +1,19 @@
+
+=== ENTREGA 4 — a rota se refaz sozinha ===
+
+  [32m OK [0m estado normal: host-a alcança host-b
+        observado: 10.0.20.10 via 10.0.30.12 dev eth1 src 10.0.30.11 uid 0 
+  [32m OK [0m o caminho normal é o CURTO: direto para r2 pelo trânsito 1
+        observado: 10.0.20.10 via 10.0.30.12 dev eth1 src 10.0.30.11 uid 0 
+
+  derrubando o trânsito 1 e cronometrando a recuperação...
+  [31mNAO [0m 60s depois a rede continua morta — nada se refez sozinho
+        observado: r1 agora diz: nenhuma rota para 10.0.20.10 (a rota foi embora junto com a interface)
+        observado: o desvio por r3 está de pé e ninguém o usa: é isto que o roteamento dinâmico resolve
+
+  religando o trânsito 1...
+  [31mNAO [0m a rede não voltou nem depois de religar o cabo
+        observado: a rota estática sumiu junto com a interface e ninguém a recriou — quem escreveu à mão teria de voltar e escrever de novo
+
+[31m2 prova(s) vermelha(s).[0m
+
