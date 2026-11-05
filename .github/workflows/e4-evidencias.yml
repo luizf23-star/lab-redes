@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: Baixar repositorio
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Conferir sintaxe e construir laboratorio
         run: |
@@ -102,9 +104,18 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin main
+          if ! git diff --quiet "$GITHUB_SHA" origin/main -- \
+            'e4-roteamento/*.sh' 'e4-roteamento/*.py' 'e4-roteamento/*.conf' \
+            'e4-roteamento/*.yml' e4-roteamento/Dockerfile base/ Makefile \
+            .github/workflows/e4-evidencias.yml; then
+            echo 'Os arquivos testados mudaram durante a execucao; execute novamente.'
+            exit 1
+          fi
           git add README.md e4-roteamento/evidencias/
           if ! git diff --cached --quiet; then
             git commit -m 'Registra provas e tempos reais da Entrega 4'
+            git rebase origin/main
             git push origin HEAD:main
           fi
 
