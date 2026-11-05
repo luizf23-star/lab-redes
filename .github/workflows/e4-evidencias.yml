@@ -1,0 +1,119 @@
+name: Gerar evidencias E4
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'e4-roteamento/*.sh'
+      - 'e4-roteamento/*.py'
+      - 'e4-roteamento/*.conf'
+      - 'e4-roteamento/*.yml'
+      - 'e4-roteamento/Dockerfile'
+      - 'base/**'
+      - 'Makefile'
+      - '.github/workflows/e4-evidencias.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: evidencias-e4
+  cancel-in-progress: false
+
+jobs:
+  verificar-e4:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+
+      - name: Conferir sintaxe e construir laboratorio
+        run: |
+          for script in e4-roteamento/*.sh; do sh -n "$script"; done
+          python3 -m py_compile e4-roteamento/*.py
+          docker compose -f e4-roteamento/docker-compose.yml config --quiet
+          make up E=4
+          for router in e4-r1 e4-r2 e4-r3; do
+            role="${router#e4-}"
+            docker exec "$router" bird -p -c "/lab/bird-$role.conf"
+          done
+
+      - name: Demonstrar que a rota estatica nao se recupera
+        run: |
+          cd e4-roteamento
+          mkdir -p evidencias
+          docker compose -f docker-compose.yml -f docker-compose.estatico.yml up -d
+          if sh verificar.sh > evidencias/controle-estatico.txt 2>&1; then
+            cat evidencias/controle-estatico.txt
+            echo 'ERRO: a topologia estatica passou indevidamente.'
+            exit 1
+          fi
+          cat evidencias/controle-estatico.txt
+          grep -q 'estado normal: host-a alcança host-b' evidencias/controle-estatico.txt
+          grep -q 'o caminho normal é o CURTO' evidencias/controle-estatico.txt
+          grep -q '60s depois a rede continua morta' evidencias/controle-estatico.txt
+          echo 'CONTROLE CONFIRMADO: funcionava antes e nao convergiu apos a falha.'
+          docker compose down
+
+      - name: Subir RIP e aguardar aprendizado inicial
+        run: |
+          make up E=4
+          python3 e4-roteamento/testar-convergencia.py --aguardar
+
+      - name: Gerar evidencias com o verificador oficial intacto
+        run: make evidencias E=4
+
+      - name: Confirmar desvio e retorno ao caminho curto nos dois sentidos
+        run: |
+          set -o pipefail
+          python3 e4-roteamento/testar-convergencia.py | tee e4-roteamento/evidencias/complementar.txt
+
+      - name: Registrar medidas e origem da execucao
+        run: |
+          python3 e4-roteamento/registrar-resultados.py
+          {
+            echo "Commit testado: $GITHUB_SHA"
+            echo "Execucao: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            date -u '+Data UTC: %Y-%m-%dT%H:%M:%SZ'
+            docker version
+            docker compose version
+            for router in e4-r1 e4-r2 e4-r3; do
+              echo "=== $router ==="
+              docker exec "$router" birdc show protocols all
+              docker exec "$router" birdc show route all
+              docker exec "$router" ip -4 route
+            done
+          } > e4-roteamento/evidencias/ambiente.txt
+
+      - name: Guardar evidencias e diagnosticos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-entrega-4
+          path: e4-roteamento/evidencias/
+          if-no-files-found: warn
+
+      - name: Commitar somente evidencias aprovadas e medidas do README
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.md e4-roteamento/evidencias/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Registra provas e tempos reais da Entrega 4'
+            git push origin HEAD:main
+          fi
+
+      - name: Diagnosticar falhas
+        if: failure()
+        run: |
+          docker ps -a
+          for router in e4-r1 e4-r2 e4-r3; do docker logs "$router" || true; done
+
+      - name: Encerrar laboratorio
+        if: always()
+        run: make down E=4

@@ -1,0 +1,8 @@
+# Sobrescrita opcional para demonstrar por que a rota estática não converge.
+services:
+  r1:
+    command: ["sh", "/lab/iniciar-estatico.sh"]
+  r2:
+    command: ["sh", "/lab/iniciar-estatico.sh"]
+  r3:
+    command: ["sh", "/lab/iniciar-estatico.sh"]
