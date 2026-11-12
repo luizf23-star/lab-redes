@@ -1,0 +1,6 @@
+Trechos textuais extraidos de claro.pcap via tcpdump -A -r (nao sao dados simulados).
+GET / HTTP/1.1
+Host: 10.0.20.20:8080
+User-Agent: curl/8.14.1
+Accept: */*
+Authorization: Bearer GRUPO-LUIZ-FERNANDO-1055368-1

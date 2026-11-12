@@ -1,0 +1,126 @@
+23:29:58.952345 IP e5-cliente.e5_seg-a.35338 > e5-srv.e5_seg-b.8080: Flags [S], seq 3802928406, win 64240, options [mss 1460,sackOK,TS val 2436827724 ecr 0,nop,wscale 10], length 0
+E..<..@.?.A.
+.
+
+
+....
+..............2L.........
+.?
+L.......
+
+23:29:58.952374 IP e5-srv.e5_seg-b.8080 > e5-cliente.e5_seg-a.35338: Flags [S.], seq 1271962604, ack 3802928407, win 65160, options [mss 1460,sackOK,TS val 3241420819 ecr 2436827724,nop,wscale 10], length 0
+E..<..@.@...
+...
+.
+
+...
+K...........2L.........
+.4(..?
+L...
+
+23:29:58.952396 IP e5-cliente.e5_seg-a.35338 > e5-srv.e5_seg-b.8080: Flags [.], ack 1, win 63, options [nop,nop,TS val 2436827724 ecr 3241420819], length 0
+E..4..@.?.A.
+.
+
+
+....
+......K......?2D.....
+.?
+L.4(.
+23:29:58.952474 IP e5-cliente.e5_seg-a.35338 > e5-srv.e5_seg-b.8080: Flags [P.], seq 1:133, ack 1, win 63, options [nop,nop,TS val 2436827724 ecr 3241420819], length 132: HTTP: GET / HTTP/1.1
+E.....@.?.AG
+.
+
+
+....
+......K......?2......
+.?
+L.4(.GET / HTTP/1.1
+Host: 10.0.20.20:8080
+User-Agent: curl/8.14.1
+Accept: */*
+Authorization: Bearer GRUPO-LUIZ-FERNANDO-1055368-1
+
+
+23:29:58.952483 IP e5-srv.e5_seg-b.8080 > e5-cliente.e5_seg-a.35338: Flags [.], ack 133, win 64, options [nop,nop,TS val 3241420819 ecr 2436827724], length 0
+E..4)*@.@..|
+...
+.
+
+...
+K..........@2D.....
+.4(..?
+L
+23:29:58.952771 IP e5-srv.e5_seg-b.8080 > e5-cliente.e5_seg-a.35338: Flags [P.], seq 1:210, ack 133, win 64, options [nop,nop,TS val 3241420819 ecr 2436827724], length 209: HTTP: HTTP/1.1 200 OK
+E...)+@.@...
+...
+.
+
+...
+K..........@3......
+.4(..?
+LHTTP/1.1 200 OK
+Date: Thu, 12 Nov 2026 23:29:58 GMT
+Connection: close
+Content-type: text/html
+Accept-Ranges: bytes
+Last-Modified: Thu, 12 Nov 2026 23:29:55 GMT
+ETag: "6af64bf3-19"
+Content-Length: 25
+
+
+23:29:58.952796 IP e5-cliente.e5_seg-a.35338 > e5-srv.e5_seg-b.8080: Flags [.], ack 210, win 63, options [nop,nop,TS val 2436827724 ecr 3241420819], length 0
+E..4..@.?.A.
+.
+
+
+....
+......K......?2D.....
+.?
+L.4(.
+23:29:58.952815 IP e5-srv.e5_seg-b.8080 > e5-cliente.e5_seg-a.35338: Flags [P.], seq 210:235, ack 133, win 64, options [nop,nop,TS val 3241420819 ecr 2436827724], length 25: HTTP
+E..M),@.@..a
+...
+.
+
+...
+K..........@2].....
+.4(..?
+Larea restrita do sistema
+
+23:29:58.952828 IP e5-cliente.e5_seg-a.35338 > e5-srv.e5_seg-b.8080: Flags [.], ack 235, win 63, options [nop,nop,TS val 2436827724 ecr 3241420819], length 0
+E..4..@.?.A.
+.
+
+
+....
+......K......?2D.....
+.?
+L.4(.
+23:29:58.952835 IP e5-srv.e5_seg-b.8080 > e5-cliente.e5_seg-a.35338: Flags [F.], seq 235, ack 133, win 64, options [nop,nop,TS val 3241420819 ecr 2436827724], length 0
+E..4)-@.@..y
+...
+.
+
+...
+K..........@2D.....
+.4(..?
+L
+23:29:58.952861 IP e5-cliente.e5_seg-a.35338 > e5-srv.e5_seg-b.8080: Flags [F.], seq 133, ack 236, win 63, options [nop,nop,TS val 2436827724 ecr 3241420819], length 0
+E..4..@.?.A.
+.
+
+
+....
+......K......?2D.....
+.?
+L.4(.
+23:29:58.952886 IP e5-srv.e5_seg-b.8080 > e5-cliente.e5_seg-a.35338: Flags [.], ack 134, win 64, options [nop,nop,TS val 3241420819 ecr 2436827724], length 0
+E..4).@.@..x
+...
+.
+
+...
+K..........@2D.....
+.4(..?
+L
