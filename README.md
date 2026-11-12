@@ -273,3 +273,22 @@ Referências:
 - [Enunciado oficial da E4](https://github.com/LuizRMSilva1973/redes-lab/blob/738b84f8412ab83320bc4aa90e45b07f96c8e5f1/entregas/E4.md).
 - [RFC 2453 — RIPv2](https://www.rfc-editor.org/rfc/rfc2453.html), especialmente seções 3.2, 3.4 e 3.8.
 - [Trabalho semestral — Minha pequena internet](https://profluiz.mantovanitec.com/disciplinas/aulas/redes/trabalho.html).
+
+
+## Entrega 5 — Captura e cartilha de Wi-Fi seguro
+
+A E5 e independente da E4 e deve ser enviada em campo proprio do formulario da disciplina.
+
+- Laboratorio isolado e codigo-fonte: [e5-seguranca/](e5-seguranca/)
+- Token didatico vinculado ao responsavel: [token.txt](e5-seguranca/token.txt)
+- Captura autenticada e PDF: o [GitHub Actions E5](.github/workflows/e5-evidencias.yml) gera `claro.pcap`, `cifrado.pcap`, `evidencias/verificacao.txt`, `evidencias/captura-http-real.png` e `cartilha.pdf` somente depois que o verificador oficial passa.
+- Veja [instrucoes de entrega da E5](e5-seguranca/README.md) e [texto-base da cartilha](e5-seguranca/cartilha-texto.md).
+- **Regra de seguranca:** capturas apenas entre contêineres do proprio laboratorio; nao capturar trafego de pessoas ou redes externas.
+- **Extensao:** registros de apresentacao ao publico e revisao apos feedback dependem de atividades realizadas de verdade, fora da sala.
+
+### Entregas independentes no formulario
+
+| Envio | Evidencias e pasta |
+|---|---|
+| **E4 — Roteamento RIP** | [Guia de envio da E4](e4-roteamento/ENTREGA-4-ENVIO.md), [verificacao verde da E4](e4-roteamento/evidencias/verificacao.txt) |
+| **E5 — Captura e Cartilha** | [Guia da E5](e5-seguranca/README.md), arquivos `claro.pcap`, `cifrado.pcap` e `cartilha.pdf` depois da geracao real |
