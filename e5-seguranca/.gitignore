@@ -1,0 +1,6 @@
+# Certificado e chave gerados no laboratorio; nao publicar chave privada
+cert.pem
+key.pem
+
+# Gerados apenas no momento da execucao
+__pycache__/
