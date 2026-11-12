@@ -1,0 +1,115 @@
+name: Gerar evidencias E5
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'e5-seguranca/token.txt'
+      - 'e5-seguranca/iniciar-servidor.sh'
+      - 'e5-seguranca/verificar.sh'
+      - 'e5-seguranca/docker-compose.yml'
+      - 'e5-seguranca/gerar-cartilha.py'
+      - '.github/workflows/e5-evidencias.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: evidencias-e5
+  cancel-in-progress: false
+
+jobs:
+  verificar-e5:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Baixar repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validar arquivos de laboratorio
+        run: |
+          sh -n e5-seguranca/verificar.sh e5-seguranca/iniciar-servidor.sh
+          python3 -m py_compile e5-seguranca/gerar-cartilha.py
+          docker compose -f e5-seguranca/docker-compose.yml config --quiet
+          test "$(cat e5-seguranca/token.txt)" != 'GRUPO-EXEMPLO-TROQUE-ISTO'
+
+      - name: Iniciar laboratorio proprio e isolado
+        run: make up E=5
+
+      - name: Capturar e executar verificador oficial sem alteracoes
+        run: |
+          make evidencias E=5
+          test -s e5-seguranca/claro.pcap
+          test -s e5-seguranca/cifrado.pcap
+          grep -q 'ENTREGA 5 COMPLETA' e5-seguranca/evidencias/verificacao.txt
+
+      - name: Extrair texto autentico do PCAP para a cartilha
+        run: |
+          docker exec e5-router tcpdump -A -r /lab-cap/claro.pcap \
+            > e5-seguranca/evidencias/captura-http-completa.txt 2>/dev/null
+          docker exec e5-router tcpdump -A -r /lab-cap/cifrado.pcap \
+            > e5-seguranca/evidencias/captura-https-completa.txt 2>/dev/null
+          grep -Fq "Authorization: Bearer $(cat e5-seguranca/token.txt)" \
+            e5-seguranca/evidencias/captura-http-completa.txt
+          if grep -Fq "$(cat e5-seguranca/token.txt)" e5-seguranca/evidencias/captura-https-completa.txt; then
+            echo 'ERRO: token legivel na captura HTTPS'
+            exit 1
+          fi
+
+      - name: Preparar biblioteca do PDF
+        run: python3 -m pip install --disable-pip-version-check reportlab pillow
+
+      - name: Gerar cartilha a partir da captura autentica
+        run: |
+          python3 e5-seguranca/gerar-cartilha.py
+          test -s e5-seguranca/cartilha.pdf
+          test -s e5-seguranca/evidencias/captura-http-real.png
+
+      - name: Guardar evidencias para conferencia e entrega
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: entrega-5-capturas-e-cartilha
+          path: |
+            e5-seguranca/claro.pcap
+            e5-seguranca/cifrado.pcap
+            e5-seguranca/cartilha.pdf
+            e5-seguranca/evidencias/
+          if-no-files-found: warn
+
+      - name: Publicar somente capturas reais aprovadas e cartilha no Git
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin main
+          if ! git diff --quiet "$GITHUB_SHA" origin/main -- \
+            e5-seguranca/token.txt e5-seguranca/iniciar-servidor.sh \
+            e5-seguranca/verificar.sh e5-seguranca/docker-compose.yml \
+            e5-seguranca/gerar-cartilha.py base/ Makefile .github/workflows/e5-evidencias.yml; then
+            echo 'Os arquivos testados mudaram durante a execucao; execute novamente.'
+            exit 1
+          fi
+          git add e5-seguranca/claro.pcap e5-seguranca/cifrado.pcap \
+            e5-seguranca/cartilha.pdf e5-seguranca/evidencias/
+          if ! git diff --cached --quiet; then
+            git commit -m 'E5: registra capturas reais e cartilha de extensao'
+            git rebase origin/main
+            git push origin HEAD:main
+          fi
+
+      - name: Diagnosticar falha
+        if: failure()
+        run: |
+          docker ps -a || true
+          docker logs e5-srv || true
+          docker logs e5-router || true
+
+      - name: Encerrar laboratorio
+        if: always()
+        run: make down E=5 || true
